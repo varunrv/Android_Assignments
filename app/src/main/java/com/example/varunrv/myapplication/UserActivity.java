@@ -1,6 +1,8 @@
 package com.example.varunrv.myapplication;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -22,10 +24,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class UserActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private EditText latitude, longitude;
+    private EditText latitude1, longitude1;
     private EditText latitude2, longitude2;
     Button mark_button;
-    String a, b, c, d;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,11 @@ public class UserActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         buttonClick();
-
-
     }
 
     public void buttonClick() {
-        latitude = (EditText) findViewById(R.id.la_value);
-        longitude = (EditText) findViewById(R.id.lo_value);
+        latitude1 = (EditText) findViewById(R.id.la_value);
+        longitude1 = (EditText) findViewById(R.id.lo_value);
         latitude2 = (EditText) findViewById(R.id.la_value2);
         longitude2 = (EditText) findViewById(R.id.lo_value2);
 
@@ -51,54 +50,51 @@ public class UserActivity extends AppCompatActivity implements OnMapReadyCallbac
         mark_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a = latitude.getText().toString();
-                b = longitude.getText().toString();
-                c = latitude2.getText().toString();
-                d = longitude2.getText().toString();
-                Log.d("values", a);
-                Log.d("values", b);
-                Log.d("values", c);
-                Log.d("values", d);
-                LatLng userEntry1 = new LatLng(Double.valueOf(a), Double.valueOf(b));
-                LatLng userEntry2 = new LatLng(Double.valueOf(c), Double.valueOf(d));
+                LatLng userEntry1 = new LatLng
+                        (Double.valueOf(latitude1.getText().toString()), Double.valueOf(longitude1.getText().toString()));
+                LatLng userEntry2 = new LatLng
+                        (Double.valueOf(latitude2.getText().toString()), Double.valueOf(longitude1.getText().toString()));
 
                 Marker m1 = mMap.addMarker(new MarkerOptions()
                         .position((userEntry1)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(userEntry1));
+
                 Marker m2 = mMap.addMarker(new MarkerOptions()
                         .position((userEntry2)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(userEntry2));
-                String z = GeoCoding.getCompleteAddressString(userEntry1.latitude, userEntry1.longitude, UserActivity.this);
-                String abc = "bangalore";
-                LatLng user3 = GeoCoding.getcoordinates(UserActivity.this, abc);
-                String l = String.valueOf(user3.latitude);
-                String ll = String.valueOf(user3.longitude);
-                Log.d("val", l);
-                Log.d("val", ll);
-                calculateDistance(userEntry1, userEntry2);
-
-            }
-
-            void calculateDistance(LatLng userEntry1, LatLng userEntry2) {
-                float x[] = new float[1];
-                Location.distanceBetween(userEntry1.latitude, userEntry1.longitude, userEntry2.latitude, userEntry2.longitude, x);
-                String f = Float.toString(x[0] / 1000);
-                Log.d("values", f);
-                AlertDialog.Builder a_builder = new AlertDialog.Builder(UserActivity.this);
-                a_builder.setMessage("Distance between coordinates  is: " + f + "kms").setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-
-                            }
-                        });
-                AlertDialog alert = a_builder.create();
-                alert.setTitle("Info....!!!!");
-                alert.show();
+                calculateDistanceBetween(userEntry1, userEntry2, UserActivity.this);
             }
         });
     }
+
+    void calculateDistanceBetween(LatLng userEntry1, LatLng userEntry2, Context context) {
+
+        float x[] = new float[1];
+
+        Location.distanceBetween(userEntry1.latitude, userEntry1.longitude, userEntry2.latitude, userEntry2.longitude, x);
+        String f = Float.toString(x[0] / 1000);
+        Log.d("values", f);
+        AlertDialog.Builder a_builder = new AlertDialog.Builder(context);
+        a_builder.setMessage("Distance between coordinates  is: " + f + "kms").setCancelable(false)
+                .setPositiveButton("NextActivity", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent inn = new Intent(UserActivity.this,ConversionActivity.class);
+                        startActivity(inn);
+                    }
+                })
+                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = a_builder.create();
+        alert.setTitle("Info....!!!!");
+        alert.show();
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

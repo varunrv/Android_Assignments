@@ -15,14 +15,7 @@ import android.widget.Button;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentOne extends Fragment implements View.OnClickListener {
-
-    Button button;
-    int counter;
-    Communicator comm;
-    public FragmentOne() {
-        // Required empty public constructor
-    }
+public class FragmentOne extends Fragment {
 
 
     @Override
@@ -32,17 +25,6 @@ public class FragmentOne extends Fragment implements View.OnClickListener {
 
         return inflater.inflate(R.layout.fragment_fragment_one, container, false);
     }
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
-        comm= (Communicator) getActivity();
-        button= (Button) getActivity().findViewById(R.id.button);
-        button.setOnClickListener(this);
-    }
 
-    @Override
-    public void onClick(View v) {
-        counter++;
-        comm.respond("The button was clicked "+counter+" times");
-    }
+
 }

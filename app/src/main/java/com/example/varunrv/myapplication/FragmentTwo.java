@@ -21,12 +21,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * A simple {@link Fragment} subclass.
  */
 public class FragmentTwo extends Fragment{
-    TextView text;
 
 
-    public FragmentTwo() {
-        // Required empty public constructor
-    }
+
+
 
 
     @Override
@@ -36,11 +34,4 @@ public class FragmentTwo extends Fragment{
 
         return inflater.inflate(R.layout.fragment_fragment_two, container, false);
     }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        text = (TextView) getActivity().findViewById(R.id.map);
-
     }
-}

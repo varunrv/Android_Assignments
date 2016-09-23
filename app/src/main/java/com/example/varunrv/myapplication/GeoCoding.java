@@ -1,8 +1,12 @@
 package com.example.varunrv.myapplication;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -11,11 +15,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import static android.R.attr.start;
+
 /**
  * Created by vvadiraj on 9/15/2016.
  */
 public class GeoCoding {
-    public static String getCompleteAddressString(double LATITUDE, double LONGITUDE, Context context) {
+    public static String getCompleteAddressString(double LATITUDE, double LONGITUDE, Context context) {         //reverse GeoCoding
         String strAdd = "";
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
@@ -34,29 +40,24 @@ public class GeoCoding {
             }
         } catch (Exception e) {
 
-
-            e.printStackTrace();
+             e.printStackTrace();
             Log.w("My Current address", "Canont get Address!");
         }
         return strAdd;
     }
 
-    public static LatLng getcoordinates(Context context, String locationname) {
+    public static LatLng getcoordinates(Context context, String locationname) {             //Geocoding
         if (!Geocoder.isPresent()) {
 
         }
-        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(context);
         try {
-            List<Address> addresses = geocoder.getFromLocationName(locationname, 1);
-            int tentatives = 0;
-            while (addresses.size() > 0 && (tentatives < 10)) {
-                addresses = geocoder.getFromLocationName("<address goes here>", 1);
-                tentatives++;
-            }
-            if (addresses.size() > 0) {
-                Log.d("zebia", "reverse geocoding:locationname" + locationname + "Latitude" + addresses.get(0).getLatitude());
-                return new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
-            }
+            List<Address> list = geocoder.getFromLocationName(locationname, 1);
+            Address location =list.get(0);
+            double latitude= location.getLatitude();
+            double longitude=location.getLongitude();
+            return new LatLng(latitude,longitude);
+
         } catch (IOException e) {
             Log.d(Geocoder.class.getName(), "not able to find LtLng");
         }
